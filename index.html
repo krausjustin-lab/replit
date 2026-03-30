@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0c0c10">
+<title>Briefcast</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:      #0c0c10;
+    --surf:    #13131a;
+    --surf2:   #1a1a24;
+    --border:  rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.13);
+    --text:    #e8e6e0;
+    --text2:   #8a8880;
+    --text3:   #45454e;
+    --gold:    #c8a96e;
+    --gold2:   #a8895a;
+    --blue:    #4a7fb5;
+    --green:   #4a8a5a;
+    --teal:    #3a8a7a;
+    --coral:   #c0503a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; overflow: hidden; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── Header ── */
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding: 48px 24px 18px;
+    border-bottom: 0.5px solid var(--border);
+    flex-shrink: 0;
+  }
+  .logo { font-family: 'Playfair Display', serif; font-size: 26px; color: var(--text); }
+  .logo span { color: var(--gold); }
+  .tagline { font-size: 9px; color: var(--text3); letter-spacing: 2px; text-transform: uppercase; margin-top: 2px; }
+  .header-date { text-align: right; }
+  .date-day { font-family: 'Playfair Display', serif; font-size: 22px; display: block; }
+  .date-str { font-size: 11px; color: var(--text2); }
+
+  /* ── Scrollable content ── */
+  .content {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 20px 20px 180px;
+  }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--surf);
+    border: 0.5px solid var(--border2);
+    border-radius: 20px;
+    padding: 22px;
+    margin-bottom: 14px;
+    position: relative;
+    overflow: hidden;
+  }
+  .card-accent {
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 2px; background: var(--gold);
+  }
+  .eyebrow { font-size: 10px; color: var(--gold); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
+  .card-title { font-family: 'Playfair Display', serif; font-size: 20px; margin-bottom: 6px; }
+  .card-sub { font-size: 13px; color: var(--text2); margin-bottom: 18px; line-height: 1.6; }
+
+  /* ── Source chips ── */
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
+  .chip {
+    font-size: 10px; padding: 3px 9px; border-radius: 20px;
+    border: 0.5px solid var(--border2); color: var(--text2); background: var(--surf2);
+  }
+  .chip.af { border-color: rgba(200,169,110,0.35); color: var(--gold); }
+  .chip.ko { border-color: rgba(74,127,181,0.35); color: var(--blue); }
+  .chip.rg { border-color: rgba(74,138,90,0.35); color: var(--green); }
+
+  /* ── Buttons ── */
+  .btn-gold {
+    width: 100%; padding: 15px; background: var(--gold); border: none;
+    border-radius: 12px; color: #1a1408; font-family: 'DM Sans', sans-serif;
+    font-size: 15px; font-weight: 500; cursor: pointer; display: flex;
+    align-items: center; justify-content: center; gap: 10px;
+    transition: opacity 0.15s;
+  }
+  .btn-gold:active { opacity: 0.8; }
+  .btn-gold:disabled { background: var(--surf2); color: var(--text3); cursor: not-allowed; }
+  .btn-outline {
+    width: 100%; padding: 12px; background: none;
+    border: 0.5px solid var(--border2); border-radius: 12px;
+    color: var(--text2); font-family: 'DM Sans', sans-serif;
+    font-size: 13px; cursor: pointer; margin-top: 10px;
+  }
+  .btn-outline.gold-text { color: var(--gold); }
+  .btn-outline:active { background: var(--surf2); }
+
+  /* ── Status steps ── */
+  .steps { margin: 4px 0; }
+  .step {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 0; border-bottom: 0.5px solid var(--border);
+    font-size: 13px; color: var(--text3);
+    transition: color 0.3s;
+  }
+  .step:last-child { border-bottom: none; }
+  .step.active { color: var(--text); }
+  .step.done { color: var(--text2); }
+  .step-dot {
+    width: 22px; height: 22px; border-radius: 50%;
+    border: 0.5px solid var(--border2); background: var(--surf2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; flex-shrink: 0; color: var(--text3);
+    transition: all 0.3s;
+  }
+  .step.active .step-dot { border-color: rgba(200,169,110,0.5); color: var(--gold); background: rgba(200,169,110,0.1); }
+  .step.done .step-dot { border-color: rgba(74,138,90,0.5); color: var(--green); background: rgba(74,138,90,0.1); }
+
+  /* ── Segment cards ── */
+  .seg-card {
+    background: var(--surf); border: 0.5px solid var(--border);
+    border-radius: 14px; padding: 16px; margin-bottom: 10px;
+    transition: border-color 0.3s, background 0.3s;
+  }
+  .seg-card.playing { border-color: rgba(200,169,110,0.4); background: rgba(200,169,110,0.04); }
+  .seg-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .seg-tag {
+    font-size: 9px; letter-spacing: 1px; padding: 3px 9px;
+    border-radius: 10px; border: 0.5px solid; text-transform: uppercase;
+  }
+  .seg-dur { font-size: 11px; color: var(--text3); margin-left: auto; }
+  .seg-text { font-size: 14px; line-height: 1.8; color: var(--text); }
+  .seg-text.korean { font-size: 15px; line-height: 2.1; color: #c8c4be; }
+
+  /* ── Sticky player ── */
+  .player {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: rgba(13,13,20,0.97);
+    border-top: 0.5px solid var(--border2);
+    padding: 14px 20px 28px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+  .player-top { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .player-info { flex: 1; min-width: 0; }
+  .player-title { font-family: 'Playfair Display', serif; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .player-seg { font-size: 11px; color: var(--text2); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  .waveform { display: flex; align-items: center; gap: 2px; height: 22px; flex-shrink: 0; }
+  .wave-bar { width: 2.5px; background: var(--gold); border-radius: 2px; height: 4px; transition: height 0.15s; }
+
+  .ctrl-row { display: flex; align-items: center; justify-content: center; gap: 20px; margin-bottom: 10px; }
+  .ctrl-skip {
+    background: var(--surf2); border: 0.5px solid var(--border2);
+    border-radius: 20px; padding: 8px 14px;
+    font-size: 12px; color: var(--text2); cursor: pointer;
+  }
+  .ctrl-play {
+    width: 52px; height: 52px; border-radius: 50%;
+    background: var(--gold); border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; color: #1a1408;
+  }
+  .ctrl-speed {
+    background: var(--surf2); border: 0.5px solid var(--border2);
+    border-radius: 8px; padding: 6px 10px;
+    font-size: 11px; color: var(--text2); cursor: pointer;
+  }
+
+  .progress-track {
+    height: 3px; background: var(--surf2); border-radius: 2px;
+    margin-bottom: 6px; cursor: pointer; position: relative;
+  }
+  .progress-fill { height: 100%; background: var(--gold); border-radius: 2px; width: 0%; transition: width 0.5s linear; }
+  .time-row { display: flex; justify-content: space-between; font-size: 10px; color: var(--text3); }
+
+  /* ── Error ── */
+  .error-card {
+    background: rgba(192,80,58,0.08); border: 0.5px solid rgba(192,80,58,0.3);
+    border-radius: 14px; padding: 16px; margin-bottom: 14px;
+    font-size: 13px; color: #e07060; line-height: 1.6; display: none;
+  }
+  .error-card.show { display: block; }
+
+  /* ── Animations ── */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  .fade-up { animation: fadeUp 0.35s ease forwards; opacity: 0; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spin { animation: spin 1s linear infinite; display: inline-block; }
+
+  /* ── Views ── */
+  .view { display: none; }
+  .view.active { display: block; }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="logo">Brief<span>cast</span></div>
+    <div class="tagline">Morning intelligence</div>
+  </div>
+  <div class="header-date">
+    <span class="date-day" id="dateDay"></span>
+    <span class="date-str" id="dateStr"></span>
+  </div>
+</header>
+
+<div class="content" id="mainContent">
+
+  <!-- Error -->
+  <div class="error-card" id="errorCard"></div>
+
+  <!-- HOME VIEW -->
+  <div class="view active" id="viewHome">
+    <div class="card">
+      <div class="card-accent"></div>
+      <div class="eyebrow">Ready</div>
+      <div class="card-title">Your Morning Brief</div>
+      <div class="card-sub">15 min · Real news · Ends in 한국어</div>
+      <div class="chips">
+        <span class="chip">Reuters</span>
+        <span class="chip">Financial Times</span>
+        <span class="chip">The Economist</span>
+        <span class="chip af">Daily Maverick</span>
+        <span class="chip af">AllAfrica</span>
+        <span class="chip ko">Korea JoongAng</span>
+        <span class="chip ko">Yonhap</span>
+        <span class="chip ko">Korea Herald</span>
+        <span class="chip">Marginal Revolution</span>
+        <span class="chip rg">Stormers · URC</span>
+        <span class="chip rg">SA Rugby</span>
+      </div>
+      <button class="btn-gold" id="btnGenerate" onclick="startGenerate(false)">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.3"/>
+          <path d="M6.5 5l5 3-5 3V5z" fill="currentColor"/>
+        </svg>
+        Generate today's brief
+      </button>
+    </div>
+  </div>
+
+  <!-- GENERATING VIEW -->
+  <div class="view" id="viewGenerating">
+    <div class="card">
+      <div class="card-accent"></div>
+      <div class="eyebrow">Working</div>
+      <div class="card-title">Building your brief</div>
+      <div class="card-sub" id="genMessage">Fetching news from your sources...</div>
+      <div class="steps">
+        <div class="step active" id="step1">
+          <div class="step-dot"><span class="spin">↻</span></div>
+          <span>Fetching real news</span>
+        </div>
+        <div class="step" id="step2">
+          <div class="step-dot">2</div>
+          <span>Writing your script</span>
+        </div>
+        <div class="step" id="step3">
+          <div class="step-dot">3</div>
+          <span>Preparing 한국어 segment</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PLAYER VIEW -->
+  <div class="view" id="viewPlayer">
+    <div class="card" style="margin-bottom:10px;">
+      <div class="card-accent"></div>
+      <div class="eyebrow" id="playerEyebrow">Today's brief</div>
+      <div class="card-title">Morning Brief</div>
+      <div class="card-sub" id="playerMeta">15 min · 7 segments</div>
+      <button class="btn-outline gold-text" onclick="toggleScript()">Read script ↓</button>
+      <button class="btn-outline" onclick="startGenerate(true)">↺ Regenerate</button>
+    </div>
+
+    <!-- Segments -->
+    <div id="segmentList"></div>
+  </div>
+
+</div>
+
+<!-- Sticky player (shown when episode is ready) -->
+<div class="player" id="stickyPlayer" style="display:none;">
+  <div class="player-top">
+    <div class="waveform" id="waveform">
+      <div class="wave-bar" id="wb0"></div>
+      <div class="wave-bar" id="wb1"></div>
+      <div class="wave-bar" id="wb2"></div>
+      <div class="wave-bar" id="wb3"></div>
+      <div class="wave-bar" id="wb4"></div>
+    </div>
+    <div class="player-info">
+      <div class="player-title">Morning Brief</div>
+      <div class="player-seg" id="nowPlaying">Press play to begin</div>
+    </div>
+    <button class="ctrl-speed" id="speedBtn" onclick="cycleSpeed()">1×</button>
+  </div>
+  <div class="ctrl-row">
+    <button class="ctrl-skip" onclick="skipSeconds(-30)">↺ 30s</button>
+    <button class="ctrl-play" id="playBtn" onclick="togglePlay()">▶</button>
+    <button class="ctrl-skip" onclick="skipSeconds(30)">30s ↻</button>
+  </div>
+  <div class="progress-track" id="progressTrack" onclick="seekClick(event)">
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
+  <div class="time-row">
+    <span id="timeNow">0:00</span>
+    <span id="timeTotal">15:00</span>
+  </div>
+</div>
+
+<script>
+// ── Date ─────────────────────────────────────────────────────
+const NOW = new Date();
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const DAYS   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+document.getElementById('dateDay').textContent = NOW.getDate();
+document.getElementById('dateStr').textContent = MONTHS[NOW.getMonth()] + ' ' + NOW.getFullYear();
+
+// ── Segment colors ────────────────────────────────────────────
+const SEG_STYLE = {
+  'Global Headlines':     { bg:'rgba(74,127,181,0.12)',  color:'#6a9fd5', border:'rgba(74,127,181,0.25)' },
+  'Africa':               { bg:'rgba(200,169,110,0.12)', color:'#c8a96e', border:'rgba(200,169,110,0.25)' },
+  'Korea':                { bg:'rgba(74,127,181,0.10)',  color:'#7ab0e0', border:'rgba(74,127,181,0.20)' },
+  'Science':              { bg:'rgba(58,138,122,0.12)',  color:'#5abaa8', border:'rgba(58,138,122,0.25)' },
+  'Business':             { bg:'rgba(74,138,90,0.12)',   color:'#6aaa7a', border:'rgba(74,138,90,0.25)' },
+  'Rugby':                { bg:'rgba(74,138,90,0.15)',   color:'#7acc8a', border:'rgba(74,138,90,0.30)' },
+  '한국어':               { bg:'rgba(192,80,58,0.12)',   color:'#e07060', border:'rgba(192,80,58,0.25)' },
+};
+
+function segStyle(label) {
+  for (const [k,v] of Object.entries(SEG_STYLE)) {
+    if (label.includes(k)) return v;
+  }
+  return { bg:'rgba(138,136,128,0.1)', color:'#8a8880', border:'rgba(138,136,128,0.2)' };
+}
+
+// ── State ─────────────────────────────────────────────────────
+let segments = [];
+let currentSeg = 0;
+let isPlaying = false;
+let utterance = null;
+let speed = 1.0;
+let scriptVisible = false;
+const SPEEDS = [0.8, 1.0, 1.1, 1.25, 1.5];
+let speedIdx = 1;
+
+// Progress tracking
+let totalWords = 0;
+let segWordOffsets = [];
+let wordsSpoken = 0;
+let progressTimer = null;
+let totalDuration = 900; // 15 min estimate
+
+// ── Views ─────────────────────────────────────────────────────
+function showView(id) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function showError(msg) {
+  const el = document.getElementById('errorCard');
+  el.textContent = msg;
+  el.classList.add('show');
+}
+
+function hideError() {
+  document.getElementById('errorCard').classList.remove('show');
+}
+
+// ── Generate ──────────────────────────────────────────────────
+async function startGenerate(force) {
+  hideError();
+  showView('viewGenerating');
+  setStep(1, 'active');
+
+  try {
+    const res = await fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ force: !!force })
+    });
+
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop();
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        try {
+          const data = JSON.parse(line.slice(6));
+          handleEvent(data);
+        } catch(e) {}
+      }
+    }
+  } catch(e) {
+    showView('viewHome');
+    showError('Could not connect. Make sure the server is running and your API key is set.');
+  }
+}
+
+function handleEvent(data) {
+  if (data.step === 'fetch') {
+    setStep(1, 'active');
+    document.getElementById('genMessage').textContent = data.message;
+  } else if (data.step === 'fetched') {
+    setStep(1, 'done');
+    setStep(2, 'active');
+    document.getElementById('genMessage').textContent = data.message;
+  } else if (data.step === 'done') {
+    setStep(2, 'done');
+    setStep(3, 'done');
+    segments = data.segments;
+    buildPlayerView();
+  } else if (data.step === 'error') {
+    showView('viewHome');
+    showError('Error: ' + data.message);
+  }
+}
+
+function setStep(n, state) {
+  const el = document.getElementById('step' + n);
+  el.className = 'step ' + state;
+  const dot = el.querySelector('.step-dot');
+  if (state === 'done') dot.innerHTML = '✓';
+  else if (state === 'active') dot.innerHTML = '<span class="spin">↻</span>';
+  else dot.textContent = n;
+}
+
+// ── Build player view ─────────────────────────────────────────
+function buildPlayerView() {
+  // Calculate word counts for progress
+  totalWords = 0;
+  segWordOffsets = [];
+  const englishSegs = segments.filter(s => !s.label.includes('한국어'));
+  englishSegs.forEach(seg => {
+    segWordOffsets.push(totalWords);
+    totalWords += seg.content.split(/\s+/).length;
+  });
+
+  // Build segment list
+  const list = document.getElementById('segmentList');
+  list.innerHTML = '';
+  segments.forEach((seg, i) => {
+    const st = segStyle(seg.label);
+    const isKorean = seg.label.includes('한국어');
+    const div = document.createElement('div');
+    div.className = 'seg-card fade-up';
+    div.id = 'seg-' + i;
+    div.style.animationDelay = (i * 0.05) + 's';
+    div.innerHTML = `
+      <div class="seg-header">
+        <span class="seg-tag" style="background:${st.bg};color:${st.color};border-color:${st.border};">${seg.label}</span>
+        <span class="seg-dur">${seg.duration}</span>
+      </div>
+      <div class="seg-text ${isKorean ? 'korean' : ''}" id="seg-text-${i}" style="display:none;">${esc(seg.content)}</div>
+    `;
+    list.appendChild(div);
+  });
+
+  showView('viewPlayer');
+  document.getElementById('stickyPlayer').style.display = 'block';
+}
+
+function toggleScript() {
+  scriptVisible = !scriptVisible;
+  segments.forEach((_, i) => {
+    const el = document.getElementById('seg-text-' + i);
+    if (el) el.style.display = scriptVisible ? 'block' : 'none';
+  });
+  document.querySelector('#viewPlayer .btn-outline.gold-text').textContent =
+    scriptVisible ? 'Hide script ↑' : 'Read script ↓';
+}
+
+// ── Speech ────────────────────────────────────────────────────
+function togglePlay() {
+  if (!segments.length) return;
+  if (isPlaying) {
+    pauseSpeech();
+  } else {
+    if (window.speechSynthesis.paused) {
+      window.speechSynthesis.resume();
+      isPlaying = true;
+      updatePlayUI(true);
+      startProgressTimer();
+    } else {
+      speakFrom(currentSeg);
+    }
+  }
+}
+
+function speakFrom(idx) {
+  stopSpeech();
+  currentSeg = idx;
+  isPlaying = true;
+  updatePlayUI(true);
+  speakSegment(idx);
+}
+
+function speakSegment(idx) {
+  if (idx >= segments.length) {
+    isPlaying = false;
+    updatePlayUI(false);
+    stopProgressTimer();
+    document.getElementById('nowPlaying').textContent = '✓ Episode complete';
+    return;
+  }
+
+  currentSeg = idx;
+  const seg = segments[idx];
+  const isKorean = seg.label.includes('한국어');
+
+  document.getElementById('nowPlaying').textContent =
+    (isPlaying ? '▶ ' : '') + seg.label;
+
+  // Highlight active segment
+  document.querySelectorAll('.seg-card').forEach((el, i) => {
+    el.classList.toggle('playing', i === idx);
+  });
+
+  // Scroll segment into view
+  const segEl = document.getElementById('seg-' + idx);
+  if (segEl) segEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  const utt = new SpeechSynthesisUtterance(seg.content);
+  utt.rate = speed;
+  utt.pitch = 1;
+
+  const voices = window.speechSynthesis.getVoices();
+  if (isKorean) {
+    const koVoice = voices.find(v => v.lang.startsWith('ko'));
+    if (koVoice) utt.voice = koVoice;
+    utt.lang = 'ko-KR';
+  } else {
+    const enVoice = voices.find(v => v.lang === 'en-US' && /google/i.test(v.name)) ||
+                    voices.find(v => v.lang === 'en-US') ||
+                    voices.find(v => v.lang.startsWith('en'));
+    if (enVoice) utt.voice = enVoice;
+    utt.lang = 'en-US';
+  }
+
+  utt.onend = () => { if (isPlaying) speakSegment(idx + 1); };
+  utt.onerror = (e) => { if (e.error !== 'interrupted' && isPlaying) speakSegment(idx + 1); };
+
+  utterance = utt;
+  window.speechSynthesis.speak(utt);
+  startProgressTimer();
+}
+
+function pauseSpeech() {
+  window.speechSynthesis.pause();
+  isPlaying = false;
+  updatePlayUI(false);
+  stopProgressTimer();
+}
+
+function stopSpeech() {
+  window.speechSynthesis.cancel();
+  isPlaying = false;
+  stopProgressTimer();
+}
+
+function skipSeconds(s) {
+  // Approximate by moving to next/prev segment
+  if (s > 0 && currentSeg < segments.length - 1) speakFrom(currentSeg + 1);
+  else if (s < 0 && currentSeg > 0) speakFrom(currentSeg - 1);
+}
+
+function cycleSpeed() {
+  speedIdx = (speedIdx + 1) % SPEEDS.length;
+  speed = SPEEDS[speedIdx];
+  document.getElementById('speedBtn').textContent = speed + '×';
+  if (isPlaying) {
+    const idx = currentSeg;
+    speakFrom(idx);
+  }
+}
+
+function seekClick(e) {
+  const pct = e.offsetX / e.currentTarget.offsetWidth;
+  const segIdx = Math.floor(pct * segments.length);
+  speakFrom(Math.max(0, Math.min(segIdx, segments.length - 1)));
+  updateProgress(pct);
+}
+
+// ── Progress ──────────────────────────────────────────────────
+let segStartTime = 0;
+let elapsedBeforeSeg = 0;
+
+function startProgressTimer() {
+  stopProgressTimer();
+  segStartTime = Date.now();
+  // Estimate elapsed time before this segment
+  const segCount = segments.length || 7;
+  elapsedBeforeSeg = (currentSeg / segCount) * totalDuration;
+
+  progressTimer = setInterval(() => {
+    const segElapsed = (Date.now() - segStartTime) / 1000;
+    const totalElapsed = elapsedBeforeSeg + segElapsed;
+    const pct = Math.min(totalElapsed / totalDuration, 1);
+    updateProgress(pct);
+    updateTimeDisplay(totalElapsed);
+  }, 500);
+}
+
+function stopProgressTimer() {
+  if (progressTimer) { clearInterval(progressTimer); progressTimer = null; }
+}
+
+function updateProgress(pct) {
+  document.getElementById('progressFill').style.width = (pct * 100) + '%';
+}
+
+function updateTimeDisplay(secs) {
+  const m = Math.floor(secs / 60);
+  const s = Math.floor(secs % 60);
+  document.getElementById('timeNow').textContent = m + ':' + String(s).padStart(2,'0');
+  document.getElementById('timeTotal').textContent = '15:00';
+}
+
+// ── Waveform ──────────────────────────────────────────────────
+let waveTimer = null;
+function updatePlayUI(playing) {
+  document.getElementById('playBtn').textContent = playing ? '⏸' : '▶';
+  if (waveTimer) { clearInterval(waveTimer); waveTimer = null; }
+  if (playing) {
+    const bars = [0,1,2,3,4].map(i => document.getElementById('wb'+i));
+    const heights = [8,14,18,10,14];
+    let t = 0;
+    waveTimer = setInterval(() => {
+      bars.forEach((b,i) => {
+        const h = 4 + Math.abs(Math.sin(t*0.08 + i*0.7)) * heights[i];
+        b.style.height = Math.round(h) + 'px';
+      });
+      t++;
+    }, 80);
+  } else {
+    [0,1,2,3,4].forEach(i => {
+      const b = document.getElementById('wb'+i);
+      if (b) b.style.height = '4px';
+    });
+  }
+}
+
+function esc(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+}
+
+// ── Init: check for cached episode ───────────────────────────
+(async () => {
+  try {
+    const res = await fetch('/api/today');
+    const data = await res.json();
+    if (data.cached && data.segments) {
+      segments = data.segments;
+      buildPlayerView();
+    }
+  } catch(e) {}
+  window.speechSynthesis.getVoices();
+})();
+
+window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+</script>
+</body>
+</html>
